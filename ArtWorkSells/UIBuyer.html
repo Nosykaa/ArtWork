@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Artwork sells</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="bootstrap/css/sb-admin.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="bootstrap/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	<script type="text/javascript" src="../../Desktop/Blockchain/Test/webthree-umbrella/web3.js/dist/web3.js"></script>
+	<script type="text/javascript" src="require.js"></script>
+	<script type="text/javascript" src="instanciateContract.js"></script>
+	<script type="text/javascript">
+	
+	    var Web3 = require(['web3'], function (web3) {
+	    	//foo is now loaded.
+		});
+
+	    var web3;
+	    if(typeof web3 !== 'undefined')
+	  		web3 = new Web3(web3.currentProvider);
+		else
+	  		// set the provider you want from Web3.providers
+	 		web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+	   	
+	
+		var artworkContract = instanciateArtWorkContract();
+	
+		function buy() {
+			web3.eth.defaultAccount = web3.eth.accounts[4];
+			var dASelect = document.getElementById("DAAdress");	
+			var deliveryAuth = dASelect.options[dASelect.selectedIndex].value;
+			var price = artworkContract.sellPrice();
+			artworkContract.pay.sendTransaction('0xb956bc907fc8e242f89df5a11de0cc8482430e3d', {value: price});
+			artworkContract.pay.sendTransaction(deliveryAuth, {value: price}, function (err, result) {
+				if (err) {
+					console.error(err);
+					var alertDiv = document.getElementById("alert");
+					alertDiv.innerHTML = '<div class="alert alert-danger" ><strong>Danger!</strong>' + err + '</div>';
+					return;
+				}
+				txhash = result;
+				filter = web3.eth.filter('latest');
+				filter.watch(function(error, result) {
+					// XXX this should be made asynchronous as well.  time
+					// to get the async library out...
+					var receipt = web3.eth.getTransactionReceipt(txhash);
+					// XXX should probably only wait max 2 events before failing XXX 
+					if (receipt && receipt.transactionHash == txhash) {
+						var valueNow = artworkContract.sellProgress();
+						console.log("after : " + valueNow);
+						var alertDiv = document.getElementById("alert");
+						if (valueNow == 3){
+							alertDiv.innerHTML = '<div class="alert alert-success" disabled="true" id="success"><strong>Success!</strong> </div>';		
+						} else {
+							alertDiv.innerHTML = '<div class="alert alert-danger" disabled="true" id="danger"><strong>Danger!</strong> An error occured</div>';
+						}
+						filter.stopWatching();
+					}
+        		});
+			});
+			var alertDiv = document.getElementById("alert");	
+			alertDiv.innerHTML = '<div class="alert alert-warning" disabled="true" id="warning"><strong>Warning!</strong> Please wait until the contract is deployed</div>';
+		}
+
+		function sign() {
+			web3.eth.defaultAccount = web3.eth.accounts[4];
+			artworkContract.signDeliveryByBuyer.sendTransaction(function (err, result) {
+				if (err) {
+					console.error(err);
+					var alertDiv = document.getElementById("alert");
+					alertDiv.innerHTML = '<div class="alert alert-danger" ><strong>Danger!</strong>' + err + '</div>';
+					return;
+				}
+				txhash = result;
+				filter = web3.eth.filter('latest');
+				filter.watch(function(error, result) {
+					// XXX this should be made asynchronous as well.  time
+					// to get the async library out...
+					var receipt = web3.eth.getTransactionReceipt(txhash);
+					// XXX should probably only wait max 2 events before failing XXX 
+					if (receipt && receipt.transactionHash == txhash) {
+						var valueNow = artworkContract.sellProgress();
+						console.log("after : " + valueNow);
+						var alertDiv = document.getElementById("alert");
+						if (valueNow == 7){
+							alertDiv.innerHTML = '<div class="alert alert-success" disabled="true" id="success"><strong>Success!</strong> </div>';		
+						} else {
+							alertDiv.innerHTML = '<div class="alert alert-danger" disabled="true" id="danger"><strong>Danger!</strong> An error occured</div>';
+						}
+						filter.stopWatching();
+					}
+        		});
+			});
+			var alertDiv = document.getElementById("alert");	
+			alertDiv.innerHTML = '<div class="alert alert-warning" disabled="true" id="warning"><strong>Warning!</strong> Please wait until the contract is deployed</div>';
+		}
+		
+		var isInit = false;
+		function initSelect() {
+			if (isInit == false ){
+				var x = document.getElementById("DAAdress");				
+				var i=0; 
+				web3.eth.accounts.forEach( function(e){
+					var c = document.createElement("option");
+					c.value = e;
+					c.text = "account " + i;
+					x.options.add(c, i+1);
+					i++; 
+				});
+				isInit = true;
+			}
+		}
+	</script>
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">ArtWork sells</a>
+            </div>
+            
+            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav side-nav">
+                    <li>
+                        <a href="index.html"><i class="fa fa-fw fa-desktop"></i> Dashboard </a>
+                    </li>
+					<li>
+                        <a href="UIIssuance.html"><i class="fa fa-fw fa-edit"></i> Deploy contract</a>
+                    </li>
+                    <li>
+                        <a href="UIOwner.html"><i class="fa fa-fw fa-edit"></i> Owner Panel</a>
+                    </li>
+                    <li>
+                        <a href="UICertificateAutho.html"><i class="fa fa-fw fa-edit"></i> Certification authority panel</a>
+                    </li>
+                    <li class="active">
+                        <a href="UIBuyer.html"><i class="fa fa-fw fa-edit"></i> Buyer panel</a>
+                    </li>
+                    <li>
+                        <a href="UIDeliveryAuth.html"><i class="fa fa-fw fa-edit"></i> Delivery authority panel</a>
+                    </li> 					
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav>
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Buyer Actions
+                        </h1>                        
+                    </div>
+                </div>
+                <!-- /.row -->
+
+                <div class="row">
+                    <div class="col-lg-6">
+						<h2>Pay for the artWork</h2>
+                        <form role="form">
+
+                            <div class="form-group">
+                                <label>Delivery authority account</label>
+                                <select id="DAAdress" class="form-control" onClick='initSelect()'>	
+									<option>------------------------</option>
+  								</select>
+                                <p class="help-block">Select the delivery authority account</p>
+                            </div>
+                            <button type="button" class="btn btn-default" onclick='buy()'>Submit Button</button>
+							<div id="alert"></div>
+                        </form>
+
+                    </div>
+                    <div class="col-lg-6">
+                        <h2>Delivery</h2>
+
+                        <form role="form">
+                                <button type="button" class="btn btn-primary" onclick='sign()' >Sign delivery</button>
+                        </form>
+						
+					</div>                        
+                </div>
+                <!-- /.row -->
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
