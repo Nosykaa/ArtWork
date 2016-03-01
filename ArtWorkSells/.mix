@@ -1,0 +1,510 @@
+{
+	"applicationUrlEth": "",
+	"applicationUrlHttp": "",
+	"deployBlockNumber": "1738",
+	"deploymentAddresses": {},
+	"deploymentDir": "",
+	"deploymentTrHashes": "{}",
+	"files": [],
+	"lastPackageDate": "2016-02-19T13:47:57",
+	"localPackageUrl": "file:///home/thibault/BlockChain Mix project/TutoMix/package//www/",
+	"registerContentHashBlockNumber": -1,
+	"registerContentHashTrHash": "",
+	"registerUrlBlockNumber": -1,
+	"registerUrlTrHash": "",
+	"startUrl": "/index.html",
+	"title": "Ratings",
+	"states": [
+		{
+			"accounts": [
+				{
+					"address": "38f388fadf4a6a35c61c3f88194ec5ae162c8944",
+					"balance": {
+						"unit": 11,
+						"value": "2"
+					},
+					"name": "initialOwner",
+					"secret": "cb73d9408c4720e230387d956eb0f829d8a4dd2c1055f96257167e14e7169074"
+				},
+				{
+					"address": "06400992be45bc64a52b5c55d3df84596d6cb4a1",
+					"balance": {
+						"unit": 11,
+						"value": "2"
+					},
+					"name": "newOwner",
+					"secret": "db95780d2f30ca8211eec37cc110cc58a2d4f9308dea00ede6717a585efa2eb7"
+				},
+				{
+					"address": "fa4b795b491cc1975e89f3c78972c3e2e827c882",
+					"balance": {
+						"unit": 11,
+						"value": "2"
+					},
+					"name": "miner",
+					"secret": "090f51d202f847d2468fc87fb06f92c469b8a1927b4aecea796b6831f1331382"
+				},
+				{
+					"address": "708e6812891b7af8697a618aaa57648c25c2f00b",
+					"balance": {
+						"unit": 11,
+						"value": "2"
+					},
+					"name": "certificationAuth",
+					"secret": "9852e7a3a8cbe61632f225f457aac3737436c1a1308e29c2b0b4fd7fd14cb091"
+				},
+				{
+					"address": "6c17432ee7b0031d60e324e41b0184051843d5c3",
+					"balance": {
+						"unit": 11,
+						"value": "2"
+					},
+					"name": "deliveryAuth",
+					"secret": "fd9386020721476dffc065b1b33fd3ef658cd93c0de50c04ac87431fd6bd1e44"
+				}
+			],
+			"blocks": [
+				{
+					"hash": "",
+					"number": 1,
+					"status": "mined",
+					"transactions": [
+						{
+							"contractId": "artWork",
+							"functionId": "artWork",
+							"gas": {
+								"value": "250000"
+							},
+							"gasAuto": true,
+							"gasPrice": {
+								"unit": 18,
+								"value": "100000"
+							},
+							"isContractCreation": true,
+							"isFunctionCall": true,
+							"label": "artWork.artWork()",
+							"parameters": {
+								"_artWorkIdentification": "Hash du fichier de la photo du tableau",
+								"_artWorkIdentificationMethod": "artWork.IdentificationMethod.method2",
+								"_certificationAuthority": "0x708e6812891b7af8697a618aaa57648c25c2f00b",
+								"_name": "Joli Tableau de Thibault",
+								"v": ""
+							},
+							"saveStatus": true,
+							"sender": "cb73d9408c4720e230387d956eb0f829d8a4dd2c1055f96257167e14e7169074",
+							"value": {
+								"unit": 18,
+								"value": "0"
+							}
+						}
+					]
+				},
+				{
+					"hash": "",
+					"number": 2,
+					"status": "mined",
+					"transactions": [
+						{
+							"contractId": "<artWork - 0>",
+							"functionId": "certify",
+							"gas": {
+								"value": "250000"
+							},
+							"gasAuto": true,
+							"gasPrice": {
+								"unit": 18,
+								"value": "100000"
+							},
+							"isContractCreation": false,
+							"isFunctionCall": true,
+							"label": "artWork.certify()",
+							"parameters": {
+								"_newOwner": "<artWork - 0>",
+								"_sellPrice": ""
+							},
+							"saveStatus": true,
+							"sender": "9852e7a3a8cbe61632f225f457aac3737436c1a1308e29c2b0b4fd7fd14cb091",
+							"value": {
+								"unit": 18,
+								"value": "0"
+							}
+						}
+					]
+				},
+				{
+					"hash": "",
+					"number": 3,
+					"status": "mined",
+					"transactions": [
+						{
+							"contractId": "<artWork - 0>",
+							"functionId": "sell",
+							"gas": {
+								"value": "25562"
+							},
+							"gasAuto": true,
+							"gasPrice": {
+								"unit": 18,
+								"value": "100000"
+							},
+							"isContractCreation": false,
+							"isFunctionCall": true,
+							"label": "artWork.sell()",
+							"parameters": {
+								"_deliveryAuthority": "<artWork - 0>",
+								"_newOwner": "0x06400992be45bc64a52b5c55d3df84596d6cb4a1",
+								"_sellPrice": "253",
+								"_sellPriceInEther": "253"
+							},
+							"saveStatus": true,
+							"sender": "cb73d9408c4720e230387d956eb0f829d8a4dd2c1055f96257167e14e7169074",
+							"value": {
+								"unit": 18,
+								"value": "0"
+							}
+						}
+					]
+				},
+				{
+					"hash": "",
+					"number": 4,
+					"status": "mined",
+					"transactions": [
+						{
+							"contractId": "<artWork - 0>",
+							"functionId": "pay",
+							"gas": {
+								"value": "25256"
+							},
+							"gasAuto": true,
+							"gasPrice": {
+								"unit": 18,
+								"value": "100000"
+							},
+							"isContractCreation": false,
+							"isFunctionCall": true,
+							"label": "artWork.pay()",
+							"parameters": {
+								"_deliveryAuthority": "0x6c17432ee7b0031d60e324e41b0184051843d5c3",
+								"_newOwner": "<artWork - 0>",
+								"_sellPrice": "",
+								"_sellPriceInEther": ""
+							},
+							"saveStatus": true,
+							"sender": "db95780d2f30ca8211eec37cc110cc58a2d4f9308dea00ede6717a585efa2eb7",
+							"value": {
+								"unit": 12,
+								"value": "253"
+							}
+						}
+					]
+				},
+				{
+					"hash": "",
+					"number": 5,
+					"status": "mined",
+					"transactions": [
+						{
+							"contractId": "<artWork - 0>",
+							"functionId": "signPickUpByDeliveryAuthority",
+							"gas": {
+								"value": "34926"
+							},
+							"gasAuto": false,
+							"gasPrice": {
+								"unit": 18,
+								"value": "100000"
+							},
+							"isContractCreation": false,
+							"isFunctionCall": true,
+							"label": "<artWork - 0>.signPickUpByDeliveryAuthority()",
+							"parameters": {},
+							"saveStatus": true,
+							"sender": "fd9386020721476dffc065b1b33fd3ef658cd93c0de50c04ac87431fd6bd1e44",
+							"value": {
+								"unit": 18,
+								"value": "0"
+							}
+						}
+					]
+				},
+				{
+					"hash": "",
+					"number": -1,
+					"status": "pending",
+					"transactions": []
+				}
+			],
+			"contracts": [],
+			"miner": {
+				"address": "fa4b795b491cc1975e89f3c78972c3e2e827c882",
+				"balance": {
+					"objectName": "",
+					"value": "2",
+					"unit": 11
+				},
+				"name": "miner",
+				"secret": "090f51d202f847d2468fc87fb06f92c469b8a1927b4aecea796b6831f1331382"
+			},
+			"title": "artWorkDeploy",
+			"transactions": [
+				{
+					"contractId": "Sample",
+					"functionId": "Sample",
+					"gas": {
+						"value": "250000"
+					},
+					"gasAuto": true,
+					"gasPrice": {
+						"unit": 18,
+						"value": "100000"
+					},
+					"isContractCreation": true,
+					"isFunctionCall": true,
+					"label": "Sample.Sample()",
+					"parameters": {},
+					"saveStatus": true,
+					"sender": "cb73d9408c4720e230387d956eb0f829d8a4dd2c1055f96257167e14e7169074",
+					"value": {
+						"unit": 18,
+						"value": "0"
+					}
+				},
+				{
+					"contractId": "artWork",
+					"functionId": "artWork",
+					"gas": {
+						"value": "250000"
+					},
+					"gasAuto": true,
+					"gasPrice": {
+						"unit": 18,
+						"value": "100000"
+					},
+					"isContractCreation": true,
+					"isFunctionCall": true,
+					"label": "artWork.artWork()",
+					"parameters": {},
+					"saveStatus": true,
+					"sender": "cb73d9408c4720e230387d956eb0f829d8a4dd2c1055f96257167e14e7169074",
+					"value": {
+						"unit": 18,
+						"value": "0"
+					}
+				}
+			]
+		},
+		{
+			"accounts": [
+				{
+					"address": "38f388fadf4a6a35c61c3f88194ec5ae162c8944",
+					"balance": {
+						"unit": 0,
+						"value": "1"
+					},
+					"name": "owner",
+					"secret": "cb73d9408c4720e230387d956eb0f829d8a4dd2c1055f96257167e14e7169074"
+				},
+				{
+					"address": "06400992be45bc64a52b5c55d3df84596d6cb4a1",
+					"balance": {
+						"unit": 0,
+						"value": "1"
+					},
+					"name": "CertificationAuthority",
+					"secret": "db95780d2f30ca8211eec37cc110cc58a2d4f9308dea00ede6717a585efa2eb7"
+				},
+				{
+					"address": "fa4b795b491cc1975e89f3c78972c3e2e827c882",
+					"balance": {
+						"unit": 0,
+						"value": "1"
+					},
+					"name": "Buyer",
+					"secret": "090f51d202f847d2468fc87fb06f92c469b8a1927b4aecea796b6831f1331382"
+				},
+				{
+					"address": "b0dcdc575ef06dc30aaea069d8043c9d463c931c",
+					"balance": {
+						"unit": 0,
+						"value": "1"
+					},
+					"name": "DeliveryAuthority",
+					"secret": "e9bf58b523b4c94255cad51b3f7efdc85a0c970bf42f1d191c126bb6f49bfb9d"
+				},
+				{
+					"address": "e4839436b31937b5b36bd6b7329cf581d6746369",
+					"balance": {
+						"unit": 0,
+						"value": "2"
+					},
+					"name": "miner",
+					"secret": "82df701884192893214af784cea83f69f8c944909a84933f881cc69a0a8be18e"
+				}
+			],
+			"blocks": [
+				{
+					"hash": "",
+					"number": 1,
+					"status": "mined",
+					"transactions": [
+						{
+							"contractId": "artWork",
+							"functionId": "artWork",
+							"gas": {
+								"value": "1336702"
+							},
+							"gasAuto": false,
+							"gasPrice": {
+								"unit": 18,
+								"value": "100000"
+							},
+							"isContractCreation": true,
+							"isFunctionCall": true,
+							"label": "artWork.artWork()",
+							"parameters": {
+								"_artWorkIdentification": "Ceci est un picasso",
+								"_certificationAuthority": "0x06400992be45bc64a52b5c55d3df84596d6cb4a1",
+								"_name": "Picasso"
+							},
+							"saveStatus": true,
+							"sender": "cb73d9408c4720e230387d956eb0f829d8a4dd2c1055f96257167e14e7169074",
+							"value": {
+								"unit": 18,
+								"value": "0"
+							}
+						}
+					]
+				},
+				{
+					"hash": "",
+					"number": 2,
+					"status": "mined",
+					"transactions": [
+						{
+							"contractId": "<artWork - 0>",
+							"functionId": "certify",
+							"gas": {
+								"value": "64173"
+							},
+							"gasAuto": false,
+							"gasPrice": {
+								"unit": 18,
+								"value": "100000"
+							},
+							"isContractCreation": false,
+							"isFunctionCall": true,
+							"label": "<artWork - 0>.certify()",
+							"parameters": {},
+							"saveStatus": true,
+							"sender": "db95780d2f30ca8211eec37cc110cc58a2d4f9308dea00ede6717a585efa2eb7",
+							"value": {
+								"unit": 18,
+								"value": "0"
+							}
+						},
+						{
+							"contractId": "<artWork - 0>",
+							"functionId": "sell",
+							"gas": {
+								"value": "76770"
+							},
+							"gasAuto": false,
+							"gasPrice": {
+								"unit": 18,
+								"value": "100000"
+							},
+							"isContractCreation": false,
+							"isFunctionCall": true,
+							"label": "<artWork - 0>.sell()",
+							"parameters": {
+								"_newOwner": "0xfa4b795b491cc1975e89f3c78972c3e2e827c882",
+								"_sellPriceInEther": "253"
+							},
+							"saveStatus": true,
+							"sender": "cb73d9408c4720e230387d956eb0f829d8a4dd2c1055f96257167e14e7169074",
+							"value": {
+								"unit": 18,
+								"value": "0"
+							}
+						}
+					]
+				},
+				{
+					"hash": "",
+					"number": 3,
+					"status": "mined",
+					"transactions": [
+						{
+							"contractId": "<artWork - 0>",
+							"functionId": "pay",
+							"gas": {
+								"value": "56549"
+							},
+							"gasAuto": false,
+							"gasPrice": {
+								"unit": 18,
+								"value": "100000"
+							},
+							"isContractCreation": false,
+							"isFunctionCall": true,
+							"label": "<artWork - 0>.pay()",
+							"parameters": {
+								"_deliveryAuthority": "0x06400992be45bc64a52b5c55d3df84596d6cb4a1"
+							},
+							"saveStatus": true,
+							"sender": "090f51d202f847d2468fc87fb06f92c469b8a1927b4aecea796b6831f1331382",
+							"value": {
+								"unit": 18,
+								"value": "253000000000000000000"
+							}
+						}
+					]
+				},
+				{
+					"hash": "",
+					"number": -1,
+					"status": "pending",
+					"transactions": []
+				}
+			],
+			"contracts": [],
+			"miner": {
+				"address": "e4839436b31937b5b36bd6b7329cf581d6746369",
+				"balance": {
+					"objectName": "",
+					"value": "2",
+					"unit": 0
+				},
+				"name": "miner",
+				"secret": "82df701884192893214af784cea83f69f8c944909a84933f881cc69a0a8be18e"
+			},
+			"title": "ContractDeploy",
+			"transactions": [
+				{
+					"contractId": "artWork",
+					"functionId": "artWork",
+					"gas": {
+						"value": "250000"
+					},
+					"gasAuto": true,
+					"gasPrice": {
+						"unit": 18,
+						"value": "100000"
+					},
+					"isContractCreation": true,
+					"isFunctionCall": true,
+					"label": "artWork.artWork()",
+					"parameters": {},
+					"saveStatus": true,
+					"sender": "cb73d9408c4720e230387d956eb0f829d8a4dd2c1055f96257167e14e7169074",
+					"value": {
+						"unit": 18,
+						"value": "0"
+					}
+				}
+			]
+		}
+	],
+	"defaultStateIndex": 0
+}
