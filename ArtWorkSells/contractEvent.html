@@ -27,10 +27,12 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-	<script type="text/javascript" src="../../Desktop/Blockchain/Test/webthree-umbrella/web3.js/dist/web3.js"></script>	
+	<script type="text/javascript" src="../../Desktop/Blockchain/Test/webthree-umbrella/web3.js/dist/web3.js"></script>
+	<script type="text/javascript" src="../../Desktop/Blockchain/Test//home/thibault/Desktop/Blockchain/Test/ethereumjs-accounts/dist/ethereumjs-accounts.js"></script>
 	<script type="text/javascript" src="require.js"></script>
 	<script type="text/javascript" src="instanciateContract.js"></script>
 	<script type="text/javascript">
+		var Accounts = require('ethereumjs-accounts');
 	    var Web3 = require(['web3'], function (web3) {
 	    	//foo is now loaded.
 		});
@@ -43,7 +45,6 @@
 	 		web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 	 			
 		var artworkContract = instanciateArtWorkContract();
-			
 		
 		function refresh(){
 			document.getElementById('name').innerHTML = artworkContract.name();
@@ -52,38 +53,14 @@
 			document.getElementById('buyer').innerHTML = "private";
 			document.getElementById('ca').innerHTML = artworkContract.certificationAuthority();
 			document.getElementById('da').innerHTML = artworkContract.deliveryAuthority();
-			var f1 = eth.filter(artworkContract.ChangeOwner());
-			console.log(f1);
-		}
-		function getState(stateNow){
-			if (stateNow == 0){
-				return "Normal";
-			} else if (stateNow == 1){
-				return "Certified";
-			} else if (stateNow == 2){
-				return "Sell";
-			} else if (stateNow == 3){
-				return "Pay";
-			} else if (stateNow == 4 || stateNow == 5){
-				return "Pick up";
-			} else if (stateNow == 6 || stateNow == 7){
-				return "Delivered";
-			} 
-			return "Unknown";
 		}
 		
-		function initPrograssBar(){
-			var stateNow = artworkContract.sellProgress();
-			var valueNow = ( stateNow/7) * 100;
+		function toto(){
+			var valueNow = (artworkContract.sellProgress() /7) * 100;
 			console.log("etat : " + valueNow);
 			var htmlBlock = "<div class=\"progress-bar progress-bar-info\" role=\"progressbar\" aria-valuenow=\"" + valueNow + "\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: " + valueNow + "%\"><span class=\"sr-only\">" + valueNow + "% Complete</span></div>"	
 			document.write(htmlBlock);
-			var state = getState(stateNow);
-			document.write(state);
 		}
-		
-		
-	
 	</script>
 </head>
 <body >
@@ -101,40 +78,21 @@
                 </button>
                 <a class="navbar-brand" href="index.html">ArtWork sells</a>
             </div>
-        	<!-- Top Menu Items -->
-			<ul class="nav navbar-right top-nav">
-				<li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa"></i> Contract info <b class="caret"></b></a>
-					<ul class="dropdown-menu alert-dropdown">						
-                        <li>
-                            <a href="#" id="contractName"></a>
-                        </li>
-                        <li>
-							<a href="#" id="contractID"></a>                            
-                        </li>
-                        <li>
-							<a href="#" id="contractAddress"></a>
-                        </li>
-                    </ul>
-					<script type='text/javascript'>
-						getContractInfoMenu(document, artworkContract);							
-					</script>
-                </li>
-		 	</ul>
+         
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
           
 			<div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                    <li class="active">
+                    <li>
                         <a href="index.html"><i class="fa fa-fw fa-desktop"></i> Dashboard </a>
                     </li>
-					<li>
+					<li >
                         <a href="UIIssuance.html"><i class="fa fa-fw fa-edit"></i> Upload an artwork</a>
                     </li>
 					 <li>
                         <a href="UICertificateAutho.html"><i class="fa fa-fw fa-edit"></i> Certify an artwork</a>
                     </li>
-                    <li>
+                    <li class="active">
                         <a href="UIOwner.html"><i class="fa fa-fw fa-edit"></i> Sell an artwork</a>
                     </li>                   
                     <li>
@@ -142,7 +100,7 @@
                     </li>
                     <li>
                         <a href="UIDeliveryAuth.html"><i class="fa fa-fw fa-edit"></i> Deliver an artwork</a>
-                    </li>            
+                    </li> 	       
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -156,7 +114,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Dashboard <small>Contract Overview</small>
+                            Contract transaction <small>Contract Overview</small>
                         </h1>                        
                     </div>
                 </div>
@@ -167,7 +125,8 @@
                 </div>	
 				<div class="progress">
                     <script type='text/javascript'>
-						initPrograssBar()							
+						toto()
+							
 					</script>
                 </div>
 				<div class="page-header">
@@ -210,29 +169,6 @@
 								</tbody>
 							</table>
                     </div>
-					<button type="button" class="btn btn-default" onclick='refresh()'>Refresh table</button>
-				
-               	</div>	
-				
-				<div class="page-header">
-                    <h2>Contract transactions log</h2>
-                </div>	
-				<div class="row">
-					<div class="table-responsive">
-                            <table class="table table-bordered table-hover" >
-                                <thead>
-                                    <tr>
-                                        <th>Hash</th>
-                                        <th>From</th>
-										<th>To</th>
-                                        <th>Event</th>
-                                    </tr>
-                                </thead>
-                                <tbody id='contractEvents'>
-                                    
-								</tbody>
-							</table>
-                    </div>
 					<button type="submit" class="btn btn-default" onclick='refresh()'>Refresh table</button>
 				
                	</div>	
@@ -246,10 +182,10 @@
     <!-- /#wrapper -->
 
     <!-- jQuery -->
-    <script src="bootstrap/js/jquery.js"></script>
+    <script src="js/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
 
 	
 </body>

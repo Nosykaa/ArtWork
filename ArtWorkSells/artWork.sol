@@ -1,6 +1,7 @@
 contract artWork {
 	enum IdentificationMethod {pictureHash, method2}
 	enum State {WaitingCertification, WaitingPayment, WaitingPickup, WaitingDelivery, Normal}
+	event ChangeOwner(address previous, address current);
 	address private currentOwner;
 	bytes32 private buyerHash;
 	string public name;
@@ -68,8 +69,9 @@ contract artWork {
 	
 	function signDeliveryByBuyer()
 	inState(State.WaitingDelivery) onlyBuyer{
-		/*release sell*/
+		/*release sell*/		
 		currentOwner.send(sellPrice);
+		ChangeOwner(currentOwner, msg.sender);
 		currentOwner = msg.sender;
 		sellPrice = 0;
 		deliveryAuthority=0;

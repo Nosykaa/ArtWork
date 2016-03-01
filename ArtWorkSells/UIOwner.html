@@ -70,16 +70,16 @@
 						console.log("after : " + valueNow);
 						var alertDiv = document.getElementById("alert");
 						if (valueNow == 2){
-							alertDiv.innerHTML = '<div class="alert alert-success" disabled="true" id="success"><strong>Success!</strong> </div>';		
+							alertDiv.innerHTML = '<div class="alert alert-success" disabled="true" id="success"><strong>Success!</strong> Your artwork is sold. Next step : The buyer need to pay it</div>';		
 						} else {
-							alertDiv.innerHTML = '<div class="alert alert-danger" disabled="true" id="danger"><strong>Danger!</strong> An error occured</div>';
+							alertDiv.innerHTML = '<div class="alert alert-danger" disabled="true" id="danger"><strong>Danger!</strong>' + err + '</div>';
 						}
 						filter.stopWatching();
 					}
         		});
 			});	
 			var alertDiv = document.getElementById("alert");	
-			alertDiv.innerHTML = '<div class="alert alert-warning" disabled="true" id="warning"><strong>Warning!</strong> Please wait until the contract is deployed</div>';
+			alertDiv.innerHTML = '<div class="alert alert-warning" disabled="true" id="warning"><strong>Warning!</strong> Please wait until the artwork is sold</div>';
 		}
 
 		function sign() {
@@ -103,16 +103,16 @@
 						console.log("after : " + valueNow);
 						var alertDiv = document.getElementById("alert");
 						if (valueNow == 4){
-							alertDiv.innerHTML = '<div class="alert alert-success" disabled="true" id="success"><strong>Success!</strong> </div>';		
+							alertDiv.innerHTML = '<div class="alert alert-success" disabled="true" id="success"><strong>Success!</strong> Your artwork is picked up. Next step : The deliver authority need to sign for pick up</div>';		
 						} else {
-							alertDiv.innerHTML = '<div class="alert alert-danger" disabled="true" id="danger"><strong>Danger!</strong> An error occured</div>';
+							alertDiv.innerHTML = '<div class="alert alert-danger" disabled="true" id="danger"><strong>Danger!</strong>' + err + '</div>';
 						}
 						filter.stopWatching();
 					}
         		});
 			});
 			var alertDiv = document.getElementById("alert");	
-			alertDiv.innerHTML = '<div class="alert alert-warning" disabled="true" id="warning"><strong>Warning!</strong> Please wait until the contract is deployed</div>';
+			alertDiv.innerHTML = '<div class="alert alert-warning" disabled="true" id="warning"><strong>Warning!</strong> Please wait until the artwork is picked up</div>';
 
 		}
 		
@@ -151,28 +151,47 @@
                 </button>
                 <a class="navbar-brand" href="index.html">ArtWork sells</a>
             </div>
-            
+            <!-- Top Menu Items -->
+			<ul class="nav navbar-right top-nav">
+				<li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa"></i> Contract info <b class="caret"></b></a>
+					<ul class="dropdown-menu alert-dropdown">						
+                        <li>
+                            <a href="#" id="contractName"></a>
+                        </li>
+                        <li>
+							<a href="#" id="contractID"></a>                            
+                        </li>
+                        <li>
+							<a href="#" id="contractAddress"></a>
+                        </li>
+                    </ul>
+					<script type='text/javascript'>
+						getContractInfoMenu(document, artworkContract);							
+					</script>
+                </li>
+		 	</ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
                     <li>
                         <a href="index.html"><i class="fa fa-fw fa-desktop"></i> Dashboard </a>
                     </li>
-					<li>
-                        <a href="UIIssuance.html"><i class="fa fa-fw fa-edit"></i> Deploy contract</a>
+					<li >
+                        <a href="UIIssuance.html"><i class="fa fa-fw fa-edit"></i> Upload an artwork</a>
+                    </li>
+					 <li>
+                        <a href="UICertificateAutho.html"><i class="fa fa-fw fa-edit"></i> Certify an artwork</a>
                     </li>
                     <li class="active">
-                        <a href="UIOwner.html"><i class="fa fa-fw fa-edit"></i> Owner Panel</a>
+                        <a href="UIOwner.html"><i class="fa fa-fw fa-edit"></i> Sell an artwork</a>
+                    </li>                   
+                    <li>
+                        <a href="UIBuyer.html"><i class="fa fa-fw fa-edit"></i> Buy an artwork</a>
                     </li>
                     <li>
-                        <a href="UICertificateAutho.html"><i class="fa fa-fw fa-edit"></i> Certification authority panel</a>
-                    </li>
-                    <li>
-                        <a href="UIBuyer.html"><i class="fa fa-fw fa-edit"></i> Buyer panel</a>
-                    </li>
-                    <li>
-                        <a href="UIDeliveryAuth.html"><i class="fa fa-fw fa-edit"></i> Delivery authority panel</a>
-                    </li> 					
+                        <a href="UIDeliveryAuth.html"><i class="fa fa-fw fa-edit"></i> Deliver an artwork</a>
+                    </li> 				
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -234,10 +253,11 @@
     <!-- /#wrapper -->
 
     <!-- jQuery -->
-    <script src="js/jquery.js"></script>
+    <script src="bootstrap/js/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+
 
 </body>
 

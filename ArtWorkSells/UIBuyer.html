@@ -46,11 +46,12 @@
 		var artworkContract = instanciateArtWorkContract();
 	
 		function buy() {
-			web3.eth.defaultAccount = web3.eth.accounts[4];
+			var buyerSelect = document.getElementById("BuyerAdress");	
+			web3.eth.defaultAccount = buyerSelect.options[buyerSelect.selectedIndex].value;
+			 
 			var dASelect = document.getElementById("DAAdress");	
 			var deliveryAuth = dASelect.options[dASelect.selectedIndex].value;
 			var price = artworkContract.sellPrice();
-			artworkContract.pay.sendTransaction('0xb956bc907fc8e242f89df5a11de0cc8482430e3d', {value: price});
 			artworkContract.pay.sendTransaction(deliveryAuth, {value: price}, function (err, result) {
 				if (err) {
 					console.error(err);
@@ -70,20 +71,22 @@
 						console.log("after : " + valueNow);
 						var alertDiv = document.getElementById("alert");
 						if (valueNow == 3){
-							alertDiv.innerHTML = '<div class="alert alert-success" disabled="true" id="success"><strong>Success!</strong> </div>';		
+							alertDiv.innerHTML = '<div class="alert alert-success" disabled="true" id="success"><strong>Success!</strong> The artwork is now paid. Next step : pick up by the owner</div>';		
 						} else {
-							alertDiv.innerHTML = '<div class="alert alert-danger" disabled="true" id="danger"><strong>Danger!</strong> An error occured</div>';
+							alertDiv.innerHTML = '<div class="alert alert-danger" disabled="true" id="danger"><strong>Danger!</strong>' + err + '</div>';
 						}
 						filter.stopWatching();
 					}
         		});
 			});
 			var alertDiv = document.getElementById("alert");	
-			alertDiv.innerHTML = '<div class="alert alert-warning" disabled="true" id="warning"><strong>Warning!</strong> Please wait until the contract is deployed</div>';
+			alertDiv.innerHTML = '<div class="alert alert-warning" disabled="true" id="warning"><strong>Warning!</strong> Please wait until the artwork is paid</div>';
 		}
 
 		function sign() {
-			web3.eth.defaultAccount = web3.eth.accounts[4];
+			var buyerSelect = document.getElementById("BuyerAdress");	
+			web3.eth.defaultAccount = buyerSelect.options[buyerSelect.selectedIndex].value;
+			
 			artworkContract.signDeliveryByBuyer.sendTransaction(function (err, result) {
 				if (err) {
 					console.error(err);
@@ -103,32 +106,37 @@
 						console.log("after : " + valueNow);
 						var alertDiv = document.getElementById("alert");
 						if (valueNow == 7){
-							alertDiv.innerHTML = '<div class="alert alert-success" disabled="true" id="success"><strong>Success!</strong> </div>';		
+							alertDiv.innerHTML = '<div class="alert alert-success" disabled="true" id="success"><strong>Success!</strong> Your artwork is now yours. Next step : Make it certify by the certification authority or keep it</div>';		
 						} else {
-							alertDiv.innerHTML = '<div class="alert alert-danger" disabled="true" id="danger"><strong>Danger!</strong> An error occured</div>';
+							alertDiv.innerHTML = '<div class="alert alert-danger" disabled="true" id="danger"><strong>Danger!</strong>' + err + '</div>';
 						}
 						filter.stopWatching();
 					}
         		});
 			});
 			var alertDiv = document.getElementById("alert");	
-			alertDiv.innerHTML = '<div class="alert alert-warning" disabled="true" id="warning"><strong>Warning!</strong> Please wait until the contract is deployed</div>';
+			alertDiv.innerHTML = '<div class="alert alert-warning" disabled="true" id="warning"><strong>Warning!</strong> Please wait until the artwork is declared delivered</div>';
 		}
 		
 		var isInit = false;
 		function initSelect() {
 			if (isInit == false ){
-				var x = document.getElementById("DAAdress");				
+				var x = document.getElementById("DAAdress");
+				var y = document.getElementById("BuyerAccount");
 				var i=0; 
 				web3.eth.accounts.forEach( function(e){
 					var c = document.createElement("option");
 					c.value = e;
 					c.text = "account " + i;
+					var d = document.createElement("option");
+					d.value = e;
+					d.text = "account " + i;
 					x.options.add(c, i+1);
+					y.options.add(d, i+1);
 					i++; 
 				});
 				isInit = true;
-			}
+			}		
 		}
 	</script>
 </head>
@@ -143,34 +151,53 @@
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
                     <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
+                    <span class="icon-bar">Contract</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="index.html">ArtWork sells</a>
             </div>
-            
+            <!-- Top Menu Items -->
+			<ul class="nav navbar-right top-nav">
+				<li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa"></i> Contract info <b class="caret"></b></a>
+					<ul class="dropdown-menu alert-dropdown">						
+                        <li>
+                            <a href="#" id="contractName"></a>
+                        </li>
+                        <li>
+							<a href="#" id="contractID"></a>                            
+                        </li>
+                        <li>
+							<a href="#" id="contractAddress"></a>
+                        </li>
+                    </ul>
+					<script type='text/javascript'>
+						getContractInfoMenu(document, artworkContract);							
+					</script>
+                </li>
+		 	</ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                    <li>
+                   <li>
                         <a href="index.html"><i class="fa fa-fw fa-desktop"></i> Dashboard </a>
                     </li>
 					<li>
-                        <a href="UIIssuance.html"><i class="fa fa-fw fa-edit"></i> Deploy contract</a>
+                        <a href="UIIssuance.html"><i class="fa fa-fw fa-edit"></i> Upload an artwork</a>
+                    </li>
+					 <li>
+                        <a href="UICertificateAutho.html"><i class="fa fa-fw fa-edit"></i> Certify an artwork</a>
                     </li>
                     <li>
-                        <a href="UIOwner.html"><i class="fa fa-fw fa-edit"></i> Owner Panel</a>
-                    </li>
-                    <li>
-                        <a href="UICertificateAutho.html"><i class="fa fa-fw fa-edit"></i> Certification authority panel</a>
-                    </li>
+                        <a href="UIOwner.html"><i class="fa fa-fw fa-edit"></i> Sell an artwork</a>
+                    </li>                   
                     <li class="active">
-                        <a href="UIBuyer.html"><i class="fa fa-fw fa-edit"></i> Buyer panel</a>
+                        <a href="UIBuyer.html"><i class="fa fa-fw fa-edit"></i> Buy an artwork</a>
                     </li>
                     <li>
-                        <a href="UIDeliveryAuth.html"><i class="fa fa-fw fa-edit"></i> Delivery authority panel</a>
-                    </li> 					
+                        <a href="UIDeliveryAuth.html"><i class="fa fa-fw fa-edit"></i> Deliver an artwork</a>
+                    </li>   					
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -184,12 +211,21 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Buyer Actions
+                            Buy an artWork
                         </h1>                        
                     </div>
                 </div>
                 <!-- /.row -->
-
+				<div class="row">
+                    <div class="col-lg-12">
+                        <label>Select your account</label>
+                        <select id="BuyerAdress" class="form-control" onClick='initSelect()'>	
+							<option>------------------------</option>
+  						</select>
+                        <p class="help-block">Select your account</p>                      
+                    </div>
+                </div>
+			
                 <div class="row">
                     <div class="col-lg-6">
 						<h2>Pay for the artWork</h2>
@@ -202,7 +238,7 @@
   								</select>
                                 <p class="help-block">Select the delivery authority account</p>
                             </div>
-                            <button type="button" class="btn btn-default" onclick='buy()'>Submit Button</button>
+                            <button type="button" class="btn btn-default" onclick='buy()'>Pay</button>
 							<div id="alert"></div>
                         </form>
 
@@ -226,12 +262,13 @@
 
     </div>
     <!-- /#wrapper -->
-
-    <!-- jQuery -->
-    <script src="js/jquery.js"></script>
+  
+	<!-- jQuery -->
+    <script src="bootstrap/js/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+
 
 </body>
 
