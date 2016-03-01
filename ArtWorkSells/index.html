@@ -27,7 +27,7 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-	<script type="text/javascript" src="../../Desktop/Blockchain/Test/webthree-umbrella/web3.js/dist/web3.js"></script>	
+	<script type="text/javascript" src="../web3.js/dist/web3.js"></script>	
 	<script type="text/javascript" src="require.js"></script>
 	<script type="text/javascript" src="instanciateContract.js"></script>
 	<script type="text/javascript">
@@ -55,6 +55,7 @@
 			var f1 = eth.filter(artworkContract.ChangeOwner());
 			console.log(f1);
 		}
+		
 		function getState(stateNow){
 			if (stateNow == 0){
 				return "Normal";
@@ -74,11 +75,11 @@
 		
 		function initPrograssBar(){
 			var stateNow = artworkContract.sellProgress();
-			var valueNow = ( stateNow/7) * 100;
+			var valueNow = (stateNow/7) * 100;
 			console.log("etat : " + valueNow);
-			var htmlBlock = "<div class=\"progress-bar progress-bar-info\" role=\"progressbar\" aria-valuenow=\"" + valueNow + "\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: " + valueNow + "%\"><span class=\"sr-only\">" + valueNow + "% Complete</span></div>"	
+			var htmlBlock = "<div class=\"progress\"><div class=\"progress-bar progress-bar-info\" role=\"progressbar\" aria-valuenow=\"" + valueNow + "\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: " + valueNow + "%\"><span class=\"sr-only\">" + valueNow + "% Complete</span></div></div>"	
 			document.write(htmlBlock);
-			var state = getState(stateNow);
+			var state = "<div> State : " +  getState(stateNow) + "</div>";
 			document.write(state);
 		}
 		
@@ -165,11 +166,9 @@
 				<div class="page-header">
                     <h2>Selling process</h2>
                 </div>	
-				<div class="progress">
-                    <script type='text/javascript'>
-						initPrograssBar()							
-					</script>
-                </div>
+                <script type='text/javascript'>
+					initPrograssBar()							
+				</script>
 				<div class="page-header">
                     <h2>Contract information</h2>
                 </div>	
@@ -214,7 +213,7 @@
 				
                	</div>	
 				
-				<div class="page-header">
+				<!--div class="page-header">
                     <h2>Contract transactions log</h2>
                 </div>	
 				<div class="row">
@@ -235,7 +234,7 @@
                     </div>
 					<button type="submit" class="btn btn-default" onclick='refresh()'>Refresh table</button>
 				
-               	</div>	
+               	</div-->	
             </div>
             <!-- /.container-fluid -->
 

@@ -26,7 +26,7 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-	<script type="text/javascript" src="../../Desktop/Blockchain/Test/webthree-umbrella/web3.js/dist/web3.js"></script>
+	<script type="text/javascript" src="../web3.js/dist/web3.js"></script>	
 	<script type="text/javascript" src="require.js"></script>
 	<script type="text/javascript" src="instanciateContract.js"></script>
 	<script type="text/javascript">
@@ -47,9 +47,12 @@
 
 		function sell() {
 			console.log('sell');
-			web3.eth.defaultAccount = web3.eth.accounts[2];
-			var ownerSelect = document.getElementById("buyerAdress");	
-			var newOwner = ownerSelect.options[ownerSelect.selectedIndex].value;			
+			var ownerSelect = document.getElementById("OwnerAdress");	
+			web3.eth.defaultAccount = ownerSelect.options[ownerSelect.selectedIndex].value;
+			
+			var buyerSelect = document.getElementById("buyerAdress");	
+			var newOwner = buyerSelect.options[buyerSelect.selectedIndex].value;			
+			
 			var artWorkPrice = document.getElementById('price').value;
 			artworkContract.sell.sendTransaction(newOwner, artWorkPrice, function (err, result) {
 				if (err) {
@@ -83,7 +86,9 @@
 		}
 
 		function sign() {
-			web3.eth.defaultAccount = web3.eth.accounts[2];
+			var ownerSelect = document.getElementById("OwnerAdress");
+			web3.eth.defaultAccount = ownerSelect.options[ownerSelect.selectedIndex].value;
+			
 			artworkContract.signPickUpByOwner.sendTransaction(function (err, result) {
 				if (err) {
 					console.error(err);
@@ -119,13 +124,18 @@
 		var isInit = false;
 		function initSelect() {
 			if (isInit == false ){
-				var x = document.getElementById("buyerAdress");				
+				var x = document.getElementById("OwnerAdress");
+				var y = document.getElementById("buyerAdress");
 				var i=0; 
 				web3.eth.accounts.forEach( function(e){
 					var c = document.createElement("option");
 					c.value = e;
 					c.text = "account " + i;
+					var d = document.createElement("option");
+					d.value = e;
+					d.text = "account " + i;
 					x.options.add(c, i+1);
+					y.options.add(d, i+1);
 					i++; 
 				});
 				isInit = true;
@@ -210,7 +220,15 @@
                     </div>
                 </div>
                 <!-- /.row -->
-
+				<div class="row">
+                    <div class="col-lg-12">
+                        <label>Select your account</label>
+                        <select id="OwnerAdress" class="form-control" onClick='initSelect()'>	
+							<option>------------------------</option>
+  						</select>
+                        <p class="help-block">Select your account</p>                      
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-lg-6">
 						<h2>Sell your artWork</h2>
@@ -229,7 +247,7 @@
                                 <p class="help-block">Help : something here</p>
                             </div>
 
-                            <button type="button" class="btn btn-default" onclick='sell()'>Submit Button</button>
+                            <button type="button" class="btn btn-default" onclick='sell()'>Sell</button>
 						</form>
 						<div id="alert"></div>
                     </div>

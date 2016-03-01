@@ -26,7 +26,7 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-	<script type="text/javascript" src="../../Desktop/Blockchain/Test/webthree-umbrella/web3.js/dist/web3.js"></script>
+	<script type="text/javascript" src="../web3.js/dist/web3.js"></script>	
 	<script type="text/javascript" src="require.js"></script>
 	<script type="text/javascript" src="instanciateContract.js"></script>
 	<script type="text/javascript">
@@ -46,7 +46,7 @@
 		var artworkContract = instanciateArtWorkContract();
 	
 		function buy() {
-			var buyerSelect = document.getElementById("BuyerAdress");	
+			var buyerSelect = document.getElementById("BuyerAddress");	
 			web3.eth.defaultAccount = buyerSelect.options[buyerSelect.selectedIndex].value;
 			 
 			var dASelect = document.getElementById("DAAdress");	
@@ -84,7 +84,7 @@
 		}
 
 		function sign() {
-			var buyerSelect = document.getElementById("BuyerAdress");	
+			var buyerSelect = document.getElementById("BuyerAddress");	
 			web3.eth.defaultAccount = buyerSelect.options[buyerSelect.selectedIndex].value;
 			
 			artworkContract.signDeliveryByBuyer.sendTransaction(function (err, result) {
@@ -122,7 +122,7 @@
 		function initSelect() {
 			if (isInit == false ){
 				var x = document.getElementById("DAAdress");
-				var y = document.getElementById("BuyerAccount");
+				var y = document.getElementById("BuyerAddress");
 				var i=0; 
 				web3.eth.accounts.forEach( function(e){
 					var c = document.createElement("option");
@@ -138,6 +138,7 @@
 				isInit = true;
 			}		
 		}
+		
 	</script>
 </head>
 
@@ -219,7 +220,7 @@
 				<div class="row">
                     <div class="col-lg-12">
                         <label>Select your account</label>
-                        <select id="BuyerAdress" class="form-control" onClick='initSelect()'>	
+                        <select id="BuyerAddress" class="form-control" onClick='initSelect()'>	
 							<option>------------------------</option>
   						</select>
                         <p class="help-block">Select your account</p>                      

@@ -26,7 +26,7 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-	<script type="text/javascript" src="../../Desktop/Blockchain/Test/webthree-umbrella/web3.js/dist/web3.js"></script>
+	<script type="text/javascript" src="../web3.js/dist/web3.js"></script>	
 	<script type="text/javascript" src="require.js"></script>
 	<script type="text/javascript" src="instanciateContract.js"></script>
 	<script type="text/javascript">
@@ -46,7 +46,9 @@
 		var artworkContract = instanciateArtWorkContract();
 		
 		function signPickUp() {
-			web3.eth.defaultAccount = web3.eth.accounts[5];
+			var daSelect = document.getElementById("DAAdress");
+			web3.eth.defaultAccount = daSelect.options[daSelect.selectedIndex].value;
+			
 			artworkContract.signPickUpByDeliveryAuthority.sendTransaction(function (err, result) {
 				if (err) {
 					console.error(err);
@@ -79,7 +81,9 @@
 		}
 		
 		function signDelivery() {
-			web3.eth.defaultAccount = web3.eth.accounts[5];
+			var daSelect = document.getElementById("DAAdress");
+			web3.eth.defaultAccount = daSelect.options[daSelect.selectedIndex].value;
+			
 			artworkContract.signDeliveryByDeliveryAuthority.sendTransaction(function (err, result) {
 				if (err) {
 					console.error(err);
@@ -109,6 +113,22 @@
 			});
 			var alertDiv = document.getElementById("alert");	
 			alertDiv.innerHTML = '<div class="alert alert-warning" disabled="true" id="warning"><strong>Warning!</strong> Please wait until the art work is declared delivered</div>';		
+		}
+		
+		var isInit = false;
+		function initSelect() {
+			if (isInit == false ){
+				var x = document.getElementById("DAAdress");
+				var i=0; 
+				web3.eth.accounts.forEach( function(e){
+					var c = document.createElement("option");
+					c.value = e;
+					c.text = "account " + i;
+					x.options.add(c, i+1);
+					i++; 
+				});
+				isInit = true;
+			}
 		}
 	</script>
 </head>
@@ -188,7 +208,15 @@
                     </div>
                 </div>
                 <!-- /.row -->
-
+				<div class="row">
+                    <div class="col-lg-12">
+                        <label>Select your account</label>
+                        <select id="DAAdress" class="form-control" onClick='initSelect()'>	
+							<option>------------------------</option>
+  						</select>
+                        <p class="help-block">Select your account</p>                      
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-lg-6">
 						<h2>Sign for pick up</h2>
