@@ -26,29 +26,27 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-	<script type="text/javascript" src="../web3.js/dist/web3.js"></script>	
-	<script type="text/javascript" src="require.js"></script>
 	<script type="text/javascript" src="instanciateContract.js"></script>
+	<script src="../dist/ethereumjs-accounts.js"></script>
+    <script src="web3.js"></script>
+    <script src="hooked-web3-provider.js"></script>
 	<script type="text/javascript">
-	
-	    var Web3 = require(['web3'], function (web3) {
-	    	//foo is now loaded.
-		});
-
-	    var web3;
-	    if(typeof web3 !== 'undefined')
-	  		web3 = new Web3(web3.currentProvider);
-		else
-	  		// set the provider you want from Web3.providers
-	 		web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-	   	
+	   
+		// Create Accounts Object
+        var Accounts = new Accounts();
+            
+        // Set web3 provider
+        var provider = new HookedWeb3Provider({
+        	host: "http://localhost:8545",
+            transaction_signer: Accounts
+        });
+		
+		web3.setProvider(provider);		
 	
 		var artworkContract = instanciateArtWorkContract();
 		
 		function signPickUp() {
-			var daSelect = document.getElementById("DAAdress");
-			web3.eth.defaultAccount = daSelect.options[daSelect.selectedIndex].value;
-			
+			web3.eth.defaultAccount = getCookie("userAddress");
 			artworkContract.signPickUpByDeliveryAuthority.sendTransaction(function (err, result) {
 				if (err) {
 					console.error(err);
@@ -81,9 +79,7 @@
 		}
 		
 		function signDelivery() {
-			var daSelect = document.getElementById("DAAdress");
-			web3.eth.defaultAccount = daSelect.options[daSelect.selectedIndex].value;
-			
+			web3.eth.defaultAccount = getCookie("userAddress");
 			artworkContract.signDeliveryByDeliveryAuthority.sendTransaction(function (err, result) {
 				if (err) {
 					console.error(err);
@@ -115,20 +111,9 @@
 			alertDiv.innerHTML = '<div class="alert alert-warning" disabled="true" id="warning"><strong>Warning!</strong> Please wait until the art work is declared delivered</div>';		
 		}
 		
-		var isInit = false;
-		function initSelect() {
-			if (isInit == false ){
-				var x = document.getElementById("DAAdress");
-				var i=0; 
-				web3.eth.accounts.forEach( function(e){
-					var c = document.createElement("option");
-					c.value = e;
-					c.text = "account " + i;
-					x.options.add(c, i+1);
-					i++; 
-				});
-				isInit = true;
-			}
+		function logOut(){	
+			Accounts.clear();
+			setCookie("");
 		}
 	</script>
 </head>
@@ -167,6 +152,18 @@
 					<script type='text/javascript'>
 						getContractInfoMenu(document, artworkContract);							
 					</script>
+                </li>
+				<li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> your profile <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="accountConnected.html"><i class="fa fa-fw fa-user"></i> Log In</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#" onClick="logOut()"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                        </li>
+                    </ul>
                 </li>
 		 	</ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
@@ -208,15 +205,7 @@
                     </div>
                 </div>
                 <!-- /.row -->
-				<div class="row">
-                    <div class="col-lg-12">
-                        <label>Select your account</label>
-                        <select id="DAAdress" class="form-control" onClick='initSelect()'>	
-							<option>------------------------</option>
-  						</select>
-                        <p class="help-block">Select your account</p>                      
-                    </div>
-                </div>
+				
                 <div class="row">
                     <div class="col-lg-6">
 						<h2>Sign for pick up</h2>

@@ -19,9 +19,11 @@ function getCookie(sName) {
 		return null;
 	}
 }
+
 function getContractInfoMenu(document, artworkContract) {
 	document.getElementById('contractName').innerHTML = '<span style="text-decoration:underline;"> Name</span> : '  +  artworkContract.name();
 	document.getElementById('contractID').innerHTML =  '<span style="text-decoration:underline;"> ID</span>  : ' + artworkContract.artWorkIdentification();
 	var address = getCookie("contractAddress");
 	document.getElementById('contractAddress').innerHTML = '<span style="text-decoration:underline;"> Address</span> : '+ address.substring(0, 10) + "...";	
 }
+

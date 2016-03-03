@@ -42,103 +42,51 @@
         });
 		
 		web3.setProvider(provider);		
+		
 		var artworkContract = instanciateArtWorkContract();
 	
-		function buy() {
-			/*var buyerSelect = document.getElementById("BuyerAddress");	
-			web3.eth.defaultAccount = buyerSelect.options[buyerSelect.selectedIndex].value;
-			 
-			var dASelect = document.getElementById("DAAdress");	
-			var deliveryAuth = dASelect.options[dASelect.selectedIndex].value;*/
-			
-			web3.eth.defaultAccount = getCookie("userAddress");
-			var deliveryAuth = document.getElementById('DAAdress').value;
-			var price = artworkContract.sellPrice();
-			artworkContract.pay.sendTransaction(deliveryAuth, {value: price}, function (err, result) {
-				if (err) {
-					console.error(err);
-					var alertDiv = document.getElementById("alert");
-					alertDiv.innerHTML = '<div class="alert alert-danger" ><strong>Danger!</strong>' + err + '</div>';
-					return;
-				}
-				txhash = result;
-				filter = web3.eth.filter('latest');
-				filter.watch(function(error, result) {
-					// XXX this should be made asynchronous as well.  time
-					// to get the async library out...
-					var receipt = web3.eth.getTransactionReceipt(txhash);
-					// XXX should probably only wait max 2 events before failing XXX 
-					if (receipt && receipt.transactionHash == txhash) {
-						var valueNow = artworkContract.sellProgress();
-						console.log("after : " + valueNow);
-						var alertDiv = document.getElementById("alert");
-						if (valueNow == 3){
-							alertDiv.innerHTML = '<div class="alert alert-success" disabled="true" id="success"><strong>Success!</strong> The artwork is now paid. Next step : pick up by the owner</div>';		
-						} else {
-							alertDiv.innerHTML = '<div class="alert alert-danger" disabled="true" id="danger"><strong>Danger!</strong>' + err + '</div>';
-						}
-						filter.stopWatching();
-					}
-        		});
-			});
-			var alertDiv = document.getElementById("alert");	
-			alertDiv.innerHTML = '<div class="alert alert-warning" disabled="true" id="warning"><strong>Warning!</strong> Please wait until the artwork is paid</div>';
+		function newAccount() {
+			Accounts.clear();
+			var pwd = document.getElementById("pwdCreate").value;			 
+			var newAccount = Accounts.new(pwd);
+			setCookie(newAccount['address']);
+			document.getElementById("resultCreate").innerHTML = JSON.stringify(newAccount, null, 2); 
 		}
 
+		function signIn() {
+			var pwd = document.getElementById("pwd").value;
+			var address = document.getElementById("address").value;
+			var signIn = Accounts.get(address, pwd); 
+			setCookie(address);
+			document.getElementById("resultSignIn").innerHTML = JSON.stringify(signIn, null, 2);			
+		}
+		
+		function importAccount(){
+			Accounts.clear();
+			setCookie("");
+			var account = document.getElementById("importedAccount").value;
+			Accounts.import(account);
+			document.getElementById("resultImport").innerHTML = 'Account imported';
+		}
+		
+		function exportAccount(){
+			document.getElementById("resultExport").value = Accounts.export();
+		}
+		
 		function logOut(){	
 			Accounts.clear();
 			setCookie("");
 		}
-		
-		function sign() {
-			web3.eth.defaultAccount = getCookie("userAddress");
-			artworkContract.signDeliveryByBuyer.sendTransaction(function (err, result) {
-				if (err) {
-					console.error(err);
-					var alertDiv = document.getElementById("alert");
-					alertDiv.innerHTML = '<div class="alert alert-danger" ><strong>Danger!</strong>' + err + '</div>';
-					return;
-				}
-				txhash = result;
-				filter = web3.eth.filter('latest');
-				filter.watch(function(error, result) {
-					// XXX this should be made asynchronous as well.  time
-					// to get the async library out...
-					var receipt = web3.eth.getTransactionReceipt(txhash);
-					// XXX should probably only wait max 2 events before failing XXX 
-					if (receipt && receipt.transactionHash == txhash) {
-						var valueNow = artworkContract.sellProgress();
-						console.log("after : " + valueNow);
-						var alertDiv = document.getElementById("alert");
-						if (valueNow == 7){
-							alertDiv.innerHTML = '<div class="alert alert-success" disabled="true" id="success"><strong>Success!</strong> Your artwork is now yours. Next step : Make it certify by the certification authority or keep it</div>';		
-						} else {
-							alertDiv.innerHTML = '<div class="alert alert-danger" disabled="true" id="danger"><strong>Danger!</strong>' + err + '</div>';
-						}
-						filter.stopWatching();
-					}
-        		});
-			});
-			var alertDiv = document.getElementById("alert");	
-			alertDiv.innerHTML = '<div class="alert alert-warning" disabled="true" id="warning"><strong>Warning!</strong> Please wait until the artwork is declared delivered</div>';
+		function setCookie(address){
+			if (navigator.cookieEnabled) {
+        		document.cookie = "userAddress=" + address;
+				var today = new Date(), expires = new Date();
+				expires.setTime(today.getTime() + (365*24*60*60*1000));
+				document.cookie = "userAddress=" + address + ";expires=" + expires.toGMTString();
+			} else {
+        		alert("Activez vos cookies !");
+			}
 		}
-		
-		var isInit = false;
-		function initSelect() {
-			if (isInit == false ){
-				var x = document.getElementById("DAAdress");
-				var i=0; 
-				web3.eth.accounts.forEach( function(e){
-					var c = document.createElement("option");
-					c.value = e;
-					c.text = "account " + i;
-					x.options.add(c, i+1);
-					i++; 
-				});
-				isInit = true;
-			}		
-		}
-		
 	</script>
 </head>
 
@@ -205,7 +153,7 @@
                     <li>
                         <a href="UIOwner.html"><i class="fa fa-fw fa-edit"></i> Sell an artwork</a>
                     </li>                   
-                    <li class="active">
+                    <li>
                         <a href="UIBuyer.html"><i class="fa fa-fw fa-edit"></i> Buy an artwork</a>
                     </li>
                     <li>
@@ -224,35 +172,74 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Buy an artWork
+                            Manage your account
                         </h1>                        
                     </div>
                 </div>
-                		
-                <div class="row">
-                    <div class="col-lg-6">
-						<h2>Pay for the artWork</h2>
+                <!-- /.row -->
+				<div class="row">
+                    <div class="col-lg-12">
+                        <h2>Sign in</h2>
                         <form role="form">
-
                             <div class="form-group">
-                                <label>Delivery authority account</label>
-								<input class="form-control" type='text' id='DAAdress'>
-                                <p class="help-block">Select the delivery authority account</p>
+                                <label>Address</label>
+                                <input class="form-control" type='text' id='address'>
+                                <p class="help-block">Enter your account's address</p>
                             </div>
-                            <button type="button" class="btn btn-default" onclick='buy()'>Pay</button>
-							<div id="alert"></div>
-                        </form>
-
+							<div class="form-group">
+                                <label>Password</label>
+                                <input class="form-control" type='text' id='pwd'>
+                                <p class="help-block">Enter your account's password</p>
+                            </div>
+                            <button type="button" class="btn btn-default" onclick='signIn()'>Log in</button>
+							<div id="resultSignIn"></div>
+                        </form>                      
                     </div>
-                    <div class="col-lg-6">
-                        <h2>Delivery</h2>
-
-                        <form role="form">
-                                <button type="button" class="btn btn-primary" onclick='sign()' >Sign delivery</button>
-                        </form>
-						
-					</div>                        
                 </div>
+				
+				<div class="row">
+                    <div class="col-lg-12">
+                        <h2>Generate an account</h2>
+                        <form role="form">
+                           <div class="form-group">
+                                <label>Password</label>
+                                <input class="form-control" type='text' id='pwdCreate'>
+                                <p class="help-block">Enter your account's password</p>
+                            </div>
+                            <button type="button" class="btn btn-default" onclick='newAccount()'>Generate</button>
+							<div id="resultCreate"></div>
+                        </form>                      
+                    </div>
+				</div>
+				<div class="row">
+                    <div class="col-lg-12">
+                        <h2>Import an account</h2>
+                        <form role="form">
+                            <div class="form-group">
+                                <label>Account</label>
+                                <input class="form-control" type='text' id='importedAccount'>
+                                <p class="help-block">Enter the json text you get when created the account</p>
+                            </div>
+                            <button type="button" class="btn btn-default" onclick='importAccount()'>Import</button>
+							<div id="resultImport"></div>
+                        </form>                      
+                    </div>
+                </div>
+					
+				<div class="row">
+                    <div class="col-lg-12">
+                        <h2>Export your account</h2>
+                        <form role="form">
+                            <div class="form-group">
+                                <label>Result</label>
+                                <input class="form-control" type='text' id='resultExport'>
+                                <p class="help-block">Save this on your computer</p>
+                            </div>
+                            <button type="button" class="btn btn-default" onclick='exportAccount()'>Export</button>
+						</form>                      
+                    </div>
+                </div>
+					
                 <!-- /.row -->
 
             </div>

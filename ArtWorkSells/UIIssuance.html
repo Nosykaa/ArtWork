@@ -27,21 +27,22 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 	
-	<script type="text/javascript" src="../web3.js/dist/web3.js"></script>	
-	<script type="text/javascript" src="require.js"></script>
-	<script type='text/javascript'>
-
-		var Web3 = require(['web3'], function (web3) {
-			//foo is now loaded.
-		});
-
-		var web3;
-		if(typeof web3 !== 'undefined')
-			web3 = new Web3(web3.currentProvider);
-		else
-			//set the provider you want from Web3.providers
-			web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-
+	<script type="text/javascript" src="instanciateContract.js"></script>
+	<script src="../dist/ethereumjs-accounts.js"></script>
+    <script src="web3.js"></script>
+    <script src="hooked-web3-provider.js"></script>
+	<script type="text/javascript">
+	   
+		// Create Accounts Object
+        var Accounts = new Accounts();
+            
+        // Set web3 provider
+        var provider = new HookedWeb3Provider({
+        	host: "http://localhost:8545",
+            transaction_signer: Accounts
+        });
+		
+		web3.setProvider(provider);		
 		// solidity code code
 		var source = "contract artWork { enum IdentificationMethod {pictureHash, method2} enum State {WaitingCertification, WaitingPayment, WaitingPickup, WaitingDelivery, Normal} event ChangeOwner(address previous, address current); address private currentOwner; bytes32 private buyerHash; string public name; string public artWorkIdentification; IdentificationMethod public artWorkIdentificationMethod; /*certificationAuthority is a trusted party that authenticate the artWork*/ /*It should be publicly known*/ address public certificationAuthority; address public deliveryAuthority; /*it may be not the right type for sellPrice in wei*/ uint256 public sellPrice=0; uint256 public sellProgress=0; State private state=State.WaitingCertification; function artWork(string _name, string _artWorkIdentification, address _certificationAuthority){ name = _name; artWorkIdentification = _artWorkIdentification; artWorkIdentificationMethod = IdentificationMethod.method2; certificationAuthority = _certificationAuthority; currentOwner = msg.sender; } /* function artWork(string _name, string _artWorkIdentification, address _certificationAuthority, IdentificationMethod _artWorkIdentificationMethod){ name = _name; artWorkIdentification = _artWorkIdentification; artWorkIdentificationMethod = _artWorkIdentificationMethod; certificationAuthority = _certificationAuthority; currentOwner = msg.sender; }*/ modifier onlyOwner {if(msg.sender==currentOwner) _ } modifier onlyBuyer {if(buyerHash==sha3(msg.sender)) _ } modifier onlyCertificationAuthority {if(msg.sender == certificationAuthority) _ } modifier onlyDeliveryAuthority {if(msg.sender==deliveryAuthority) _ } modifier inState(State _state) {if(state==_state) _ } modifier costs(uint _price) {if(sellPrice==_price ) _ } event saleInitiated(); event paid(); event pickedUp(); event delivered(); function certify() inState(State.WaitingCertification) onlyCertificationAuthority() { state=State.Normal; sellProgress = 1; } function signPickUpByOwner() inState(State.WaitingPickup) onlyOwner{ sellProgress = 4; } function signPickUpByDeliveryAuthority() inState(State.WaitingPickup) onlyDeliveryAuthority{ state=State.WaitingDelivery; pickedUp(); sellProgress = 5; } function signDeliveryByBuyer() inState(State.WaitingDelivery) onlyBuyer{ /*release sell*/ currentOwner.send(sellPrice); ChangeOwner(currentOwner, msg.sender); currentOwner = msg.sender; sellPrice = 0; deliveryAuthority=0; state=State.Normal; delivered(); sellProgress = 7; } function signDeliveryByDeliveryAuthority() inState(State.WaitingDelivery) onlyDeliveryAuthority{ sellProgress = 6; } /* At this stage artWork can only be bought in ether. In the future we should offer possibility to sell in any cryptocurrency available in Ethereum */ function sell(address _newOwner, uint256 _sellPriceInEther) inState(State.Normal) onlyOwner{ sellPrice = _sellPriceInEther*1 ether; state = State.WaitingPayment; buyerHash = sha3(_newOwner); saleInitiated(); sellProgress = 2; } /* Payment is realised in ether, so in msg.value Payment can be done as a whole and from buyer address only */ function pay(address _deliveryAuthority) inState(State.WaitingPayment) costs(msg.value) onlyBuyer { state = State.WaitingPickup; deliveryAuthority = _deliveryAuthority; paid(); sellProgress = 3; } }";
 		var compiled = web3.eth.compile.solidity(source);
@@ -53,21 +54,21 @@
         	alert("Activez vos cookies !");
 		}
 		function createExampleContract() {  
-			console.log("createExampleContract");
-			var ownerSelect = document.getElementById("OwnerAccount");	
-			var strUser = ownerSelect.options[ownerSelect.selectedIndex].value;
+						
+			var strUser = getCookie("userAddress"); 
 			web3.eth.defaultAccount = strUser;
+			
 			console.log("Owner : " + web3.eth.defaultAccount);
 			
-			var caSelect = document.getElementById("CAAccount");	
-			var certificationAuthorityAddress = caSelect.options[caSelect.selectedIndex].value;
-			console.log("CA : " + certificationAuthorityAddress);
+			var caSelect = document.getElementById("CAAccount").value;	
+			
+			console.log("CA : " + caSelect);
 			var vName = document.getElementById('name').value;
 			var vIdentifier = document.getElementById('identifier').value;
 			
 			// create contract
 
-			web3.eth.contract(abi).new(vName, vIdentifier, certificationAuthorityAddress,{from: web3.eth.defaultAccount, data: code, gas: 1500000}, function (err, contract) {
+			web3.eth.contract(abi).new(vName, vIdentifier, caSelect,{from: web3.eth.defaultAccount, data: code, gas: 1500000}, function (err, contract) {
 				if (err) {
 					console.error(err);
 					var alertDiv = document.getElementById("alert");	
@@ -99,26 +100,11 @@
 			alertDiv.innerHTML = '<div class="alert alert-warning" disabled="true" id="warning"><strong>Warning!</strong> Please wait until your artwork is upload</div>';
 		}
 		
-		var isInit = false;
-		function initSelect() {
-			if (isInit == false ){
-				var x = document.getElementById("OwnerAccount");
-				var y = document.getElementById("CAAccount");
-				var i=0; 
-				web3.eth.accounts.forEach( function(e){
-					var c = document.createElement("option");
-					c.value = e;
-					c.text = "account " + i;
-					var d = document.createElement("option");
-					d.value = e;
-					d.text = "account " + i;
-					x.options.add(c, i+1);
-					y.options.add(d, i+1);
-					i++; 
-				});
-				isInit = true;
-			}
+		function logOut(){	
+			Accounts.clear();
+			setCookie("");
 		}
+				
 	</script>
 </head>
 	<body>
@@ -155,6 +141,18 @@
 					<script type='text/javascript'>
 						getContractInfoMenu(document, artworkContract);							
 					</script>
+                </li>
+				<li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> your profile <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="accountConnected.html"><i class="fa fa-fw fa-user"></i> Log In</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#"  onClick="logOut()"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                        </li>
+                    </ul>
                 </li>
 		 	</ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
@@ -212,18 +210,11 @@
                                 <input class="form-control" type='text' id='identifier'>
                                 <p class="help-block">Help : something here</p>
                             </div>
-							<div class="form-group">
-                                <label>Owner account</label>
-                                <select id="OwnerAccount" class="form-control" onClick='initSelect()'>	
-									<option>------------------------</option>
-  								</select>
-                                <p class="help-block">Select the owner account</p>
-                            </div>
+							
 							<div class="form-group">
                                 <label>Cerfication authority account</label>
-                                <select id="CAAccount" class="form-control" onClick='initSelect()'>	
-									<option>------------------------</option>
-  								</select>
+								<input class="form-control" type='text' id='CAAccount'>
+                                
                                 <p class="help-block">Select the certification authority account</p>
                             </div>
                             <button type="button" class="btn btn-default" onclick='createExampleContract()'>Submit Button</button>
